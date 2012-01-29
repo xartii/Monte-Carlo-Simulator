@@ -48,7 +48,7 @@ MainWnd::MainWnd(const wxString &title, const wxPoint &position, const wxSize &s
     : wxFrame(NULL, -1, title, position, size)
 {
     CreateStatusBar();
-    SetStatusText(_("Autor: Artur Wójcik"));
+    SetStatusText(_("Author: Artur Wójcik"));
 }
 
 void MainWnd::OnQuit(wxCommandEvent & WXUNUSED(event))
@@ -59,28 +59,28 @@ void MainWnd::OnQuit(wxCommandEvent & WXUNUSED(event))
 void MainWnd::Fill(MainWnd *hWnd)
 {
 
-    //tworzenie menu
+    //Menu creation
 
     wxMenu *fileMenu = new wxMenu;
-    fileMenu->Append(wxID_NEW, wxT("Nowy projekt"), wxT("Utwórz nowy projekt"));
-    fileMenu->Append(wxID_OPEN, wxT("Otwórz projekt"), wxT("Otwórz plik z wcześniej zapisanym projektem opcji..."));
-    fileMenu->Append(wxID_SAVE, wxT("Zapisz projekt"), wxT("Zapisz wcześniej utworzony projekt..."));
+    fileMenu->Append(wxID_NEW, wxT("New project"), wxT("Create a new project"));
+    fileMenu->Append(wxID_OPEN, wxT("Open a project file"), wxT("Open a file with previously saved project..."));
+    fileMenu->Append(wxID_SAVE, wxT("Save project"), wxT("Save a created project..."));
 
     fileMenu->AppendSeparator();
-    fileMenu->Append(wxID_EXIT, wxT("Zamknij"), wxT("Zamknij program..."));
+    fileMenu->Append(wxID_EXIT, wxT("Exit"), wxT("Exit program..."));
 
     wxMenu *simMenu = new wxMenu;
-    simMenu->Append(ID_SimAdd, wxT("Utwórz symulację"), wxT("Utwórz nową symulację dla projektu..."));
-    simMenu->Append(ID_SimSav, wxT("Zapisz wyniki symulacji"), wxT("Zapisz wyniki wybranej symulacji..."));
+    simMenu->Append(ID_SimAdd, wxT("Create simulation"), wxT("Create a simulation for chosen project..."));
+    simMenu->Append(ID_SimSav, wxT("Save simulation results"), wxT("Save the results of chosen simulation..."));
 
     wxMenuBar *menuBar = new wxMenuBar;
-    menuBar->Append(fileMenu, wxT("Plik"));
-    menuBar->Append(simMenu, wxT("Symulacja"));
+    menuBar->Append(fileMenu, wxT("Project"));
+    menuBar->Append(simMenu, wxT("Simulation"));
     SetMenuBar(menuBar);
 
     BoxSizer = new wxBoxSizer(wxHORIZONTAL);
     tree = new wxTreeCtrl(hWnd, ID_Tree, wxDefaultPosition, wxSize(200,400), wxTR_HAS_BUTTONS|wxTR_SINGLE);
-    Root = tree->AddRoot(wxT("Opcje"), 0, 0, new Option(wxT("Opcje")));
+    Root = tree->AddRoot(wxT("Options"), 0, 0, new Option(wxT("Options")));
 
     BoxSizer->Add(tree, 1, wxEXPAND|wxALIGN_LEFT, 0);
 
@@ -106,15 +106,7 @@ void MainWnd::Fill(MainWnd *hWnd)
     Centre();
 }
 
-/*   MainWnd::~MainWnd()
-   {
-//	delete SidePanel;
-	delete tree;
-	delete Plot;
-//	delete SideSizer;
-	delete BoxSizer;
-   }
-*/
+
 
 void MainWnd::OnClick(wxCommandEvent &event)
 {
@@ -130,19 +122,19 @@ void MainWnd::OnClick(wxCommandEvent &event)
 
             if(!tree->GetFirstChild(Root, cookie).IsOk())
             {
-                wxMessageBox(wxT("Nie dodano jeszcze żadnych opcji!"), wxT("Błąd"), wxICON_ERROR, this);
+                wxMessageBox(wxT("No options have been added!"), wxT("Error"), wxICON_ERROR, this);
                 return;
 
             }
             temp = tree->GetSelection();
             if(!temp.IsOk() || temp == Root)
             {
-                wxMessageBox(wxT("Nie wybrałeś opcji do symulowania!"), wxT("Błąd"), wxICON_ERROR, this);
+                wxMessageBox(wxT("You must choose an option to simulate!"), wxT("Error"), wxICON_ERROR, this);
                 return;
             }
             if(tree->GetItemParent(temp) != Root)
             {
-                wxMessageBox(wxT("Nie można symulować symulacji!"), wxT("Błąd"), wxICON_ERROR, this);
+                wxMessageBox(wxT("You can't simulate a simulation!"), wxT("Error"), wxICON_ERROR, this);
                 return;
             }
             if(simDlg->ShowModal() == wxID_OK)
@@ -203,18 +195,18 @@ void MainWnd::ShowInfo(wxTreeEvent &WXUNUSED(event))
         tmp = static_cast<Option*>(tree->GetItemData(tree->GetItemParent(tree->GetSelection())));
 
 
-    temp << wxT("Wartość opcji: ") << tmp->GetValue();
+    temp << wxT("Option value: ") << tmp->GetValue();
     FindWindow(-44)->SetLabel(temp);
-    temp = wxT("Wartość wykupu: ");
+    temp = wxT("Interest rate: ");
     temp << tmp->GetInterest();
     FindWindow(-45)->SetLabel(temp);
-    temp = wxT("Stopa zwrotu: ");
+    temp = wxT("Riskfree rate: ");
     temp << tmp->GetRiskFree();
     FindWindow(-46)->SetLabel(temp);
-    temp = wxT("Zmienność: ");
+    temp = wxT("Volatility: ");
     temp << tmp->GetVolatility();
     FindWindow(-47)->SetLabel(temp);
-    temp = wxT("Czas: ");
+    temp = wxT("Time: ");
     temp << tmp->GetTime();
     FindWindow(-48)->SetLabel(temp);
 
@@ -227,7 +219,7 @@ void MainWnd::PopUp(wxTreeEvent &event)
     if(item == Root)
     {
         pop = new wxMenu;
-        pop->Append(ID_OptNew, wxT("Dodaj nową opcję"), NULL);
+        pop->Append(ID_OptNew, wxT("Add option"), NULL);
         PopupMenu(pop);
         return;
     }
@@ -235,26 +227,26 @@ void MainWnd::PopUp(wxTreeEvent &event)
     if(tree->GetItemParent(item) == Root)
     {
         pop = new wxMenu;
-        pop->Append(ID_OptNew, wxT("Dodaj nową opcję"), NULL);
+        pop->Append(ID_OptNew, wxT("Add option"), NULL);
         pop->AppendSeparator();
-        pop->Append(ID_OptDel, wxT("Usuń"), NULL);
-        pop->Append(ID_OptRen, wxT("Zmień nazwę "), NULL);
-        pop->Append(ID_OptChn, wxT("Zmień parametry"), NULL);
+        pop->Append(ID_OptDel, wxT("Delete"), NULL);
+        pop->Append(ID_OptRen, wxT("Change name"), NULL);
+        pop->Append(ID_OptChn, wxT("Change parameters"), NULL);
         pop->AppendSeparator();
-        pop->Append(ID_SimAdd, wxT("Dodaj symulację"), NULL);
+        pop->Append(ID_SimAdd, wxT("Add simulation"), NULL);
         PopupMenu(pop);
         return;
     }
 
     pop = new wxMenu;
-    pop->AppendCheckItem(ID_SimVis, wxT("Symulacja widoczna"), wxT(""));
+    pop->AppendCheckItem(ID_SimVis, wxT("Simulation visible"), wxT(""));
     pop->AppendSeparator();
     if(static_cast<Simulation*>(tree->GetItemData(item))->IsVisible())
         pop->Check(ID_SimVis, true);
-    pop->Append(ID_SimDel, wxT("Usuń"), NULL);
-    pop->Append(ID_SimRen, wxT("Zmień nazwę"), NULL);
-    pop->Append(ID_SimChn, wxT("Zmień parametry"), NULL);
-    pop->Append(ID_SimCal, wxT("Przelicz"), NULL);
+    pop->Append(ID_SimDel, wxT("Delete"), NULL);
+    pop->Append(ID_SimRen, wxT("Change name"), NULL);
+    pop->Append(ID_SimChn, wxT("Change parameters"), NULL);
+    pop->Append(ID_SimCal, wxT("Recalculate"), NULL);
     PopupMenu(pop);
 
     delete pop;
@@ -268,7 +260,7 @@ void MainWnd::OptRen(wxCommandEvent &WXUNUSED(event))
 
 void MainWnd::SimDel(wxCommandEvent &WXUNUSED(event))
 {
-    if(wxMessageBox(wxT("Czy na pewno chcesz usunąć wybraną symulację?"), wxT("Potwierdź"), wxYES_NO, this) == wxYES)
+    if(wxMessageBox(wxT("Are you sure to delete simulation?"), wxT("Confirm"), wxYES_NO, this) == wxYES)
     {
         mpFXYVector* tmp = static_cast<Simulation*>(tree->GetItemData(tree->GetSelection()))->GetVector();
         Plot->RemoveVector(tmp);
@@ -281,7 +273,7 @@ void MainWnd::SimChn(wxCommandEvent &WXUNUSED(event))
     Simulation *sim = static_cast<Simulation*>(tree->GetItemData(tree->GetSelection()));
     SimulationDialog *simDlg = new SimulationDialog(this,
                                                     wxID_ANY,
-                                                    wxT("Zmień parametry symulacji"),
+                                                    wxT("Change simulation parameters"),
                                                     wxDefaultPosition,
                                                     wxSize(400, 300),
                                                     wxCAPTION|wxSYSTEM_MENU,
@@ -330,7 +322,7 @@ void MainWnd::OptChn(wxCommandEvent &WXUNUSED(event))
     Option *opt = static_cast<Option*>(tree->GetItemData(tree->GetSelection()));
     OptionDialog *optDlg = new OptionDialog(this,
                                             wxID_ANY,
-                                            wxT("Zmień parametry symulacji"),
+                                            wxT("Change option parameters"),
                                             wxDefaultPosition,
                                             wxSize(500, 250),
                                             wxCAPTION|wxSYSTEM_MENU,
@@ -355,7 +347,7 @@ void MainWnd::OptChn(wxCommandEvent &WXUNUSED(event))
         if(tree->GetChildrenCount(tree->GetSelection(), false) == 0)
             return;
 
-        if(wxMessageBox(wxT("Zmieniono parametry opcji, czy chesz przeliczyć symulacje?"), wxT("Pytanie"), wxYES_NO, this) == wxYES)
+        if(wxMessageBox(wxT("Option parameters has been changed, do you want to recalculate simulations?"), wxT("Question"), wxYES_NO, this) == wxYES)
         {
             wxTreeItemIdValue cookie;
             wxTreeItemId child;
@@ -380,7 +372,7 @@ void MainWnd::OptDel(wxCommandEvent &WXUNUSED(event))
 {
     if(tree->GetChildrenCount(tree->GetSelection()) > 0)
     {
-        if(wxMessageBox(wxT("Czy na pewno chcesz usunąć wybraną opcję razem z symulacjami?"), wxT("Potwierdź"), wxYES_NO, this) != wxYES)
+        if(wxMessageBox(wxT("Are you sure to delete option with its simulations??"), wxT("Confirm"), wxYES_NO, this) != wxYES)
             return;
 
         wxTreeItemIdValue cookie;
@@ -399,7 +391,7 @@ void MainWnd::OptDel(wxCommandEvent &WXUNUSED(event))
     }
     else
     {
-        if(wxMessageBox(wxT("Czy na pewno chcesz usunąć wybraną opcję?"), wxT("Potwierdź"), wxYES_NO, this) != wxYES)
+        if(wxMessageBox(wxT("Are you sure to delete an option?"), wxT("Confirm"), wxYES_NO, this) != wxYES)
             return;
     }
 
@@ -413,15 +405,15 @@ void MainWnd::SimSav(wxCommandEvent &WXUNUSED(event))
 {
     if(!tree->GetSelection().IsOk() || tree->GetSelection() == Root)
     {
-        wxMessageBox(wxT("Nic nie wybrano"), wxT("Błąd"), wxICON_ERROR, this);
+        wxMessageBox(wxT("Nothing has been chosen"), wxT("Error"), wxICON_ERROR, this);
         return;
     }
         if(tree->GetItemParent(tree->GetSelection()) == Root)
     {
-        wxMessageBox(wxT("Aby zapisać opcję, wybierz Zapisz projekt"), wxT("Błąd"), wxICON_ERROR, this);
+        wxMessageBox(wxT("To save an option choose Save project"), wxT("Error"), wxICON_ERROR, this);
         return;
     }
-    wxFileDialog dialog(this, wxT("Zapisz wyniki symulacji"), wxT(""), tree->GetItemText(tree->GetSelection())+wxT(".dsv"), wxT("Plik DSV (separator : ) (*.dsv)|*.dsv|Plik GNUPlot (*.dat)|*.dat"), wxSAVE|wxOVERWRITE_PROMPT);
+    wxFileDialog dialog(this, wxT("Save simulation resuls"), wxT(""), tree->GetItemText(tree->GetSelection())+wxT(".dsv"), wxT("DSV (separator : ) (*.dsv)|*.dsv|GNUPlot (*.dat)|*.dat"), wxSAVE|wxOVERWRITE_PROMPT);
 
     if(dialog.ShowModal() == wxID_OK)
     {
@@ -446,17 +438,17 @@ void MainWnd::OptSav(wxCommandEvent &WXUNUSED(event))
 {
     if(!tree->GetSelection().IsOk() || tree->GetSelection() == Root)
     {
-        wxMessageBox(wxT("Nic nie wybrano"), wxT("Błąd"), wxICON_ERROR, this);
+        wxMessageBox(wxT("Nothing has been chosen"), wxT("Error"), wxICON_ERROR, this);
         return;
     }
 
     if(tree->GetItemParent(tree->GetSelection()) != Root)
     {
-        wxMessageBox(wxT("Aby zapisać symulację, wybierz Zapisz wyniki symulacji"), wxT("Błąd"), wxICON_ERROR, this);
+        wxMessageBox(wxT("To save simulation, choose Save simulation resuls"), wxT("Error"), wxICON_ERROR, this);
         return;
     }
 
-    wxFileDialog dialog(this, wxT("Zapisz projekt"), wxT(""), tree->GetItemText(tree->GetSelection())+wxT(".dat"), wxT("Plik projektu (*.dat)|*.dat"), wxSAVE|wxOVERWRITE_PROMPT);
+    wxFileDialog dialog(this, wxT("Save project"), wxT(""), tree->GetItemText(tree->GetSelection())+wxT(".dat"), wxT("Project file (*.dat)|*.dat"), wxSAVE|wxOVERWRITE_PROMPT);
 
     if(dialog.ShowModal() == wxID_OK)
     {
@@ -516,7 +508,7 @@ void MainWnd::OptSav(wxCommandEvent &WXUNUSED(event))
 
 void MainWnd::OptLoad(wxCommandEvent &WXUNUSED(event))
 {
-    wxFileDialog dialog(this, wxT("Wybierz plik projektu"), wxT(""), wxT(""), wxT("Plik projektu (*.dat)|*.dat"), wxOPEN);
+    wxFileDialog dialog(this, wxT("Load project file"), wxT(""), wxT(""), wxT("Project file (*.dat)|*.dat"), wxOPEN);
 
     if(dialog.ShowModal() == wxID_OK)
     {

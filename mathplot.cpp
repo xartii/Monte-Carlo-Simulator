@@ -1188,12 +1188,12 @@ mpWindow::mpWindow( wxWindow *parent, wxWindowID id, const wxPoint &pos, const w
 
     m_lockaspect = FALSE;
 
-    m_popmenu.Append( mpID_CENTER,     _("Wyśrodkuj"),      _("Center plot view to this position"));
-    m_popmenu.Append( mpID_FIT,        _("Dopasuj"),         _("Set plot view to show all items"));
-    m_popmenu.Append( mpID_ZOOM_IN,    _("Przybliż"),     _("Zoom in plot view."));
-    m_popmenu.Append( mpID_ZOOM_OUT,   _("Oddal"),    _("Zoom out plot view."));
-    m_popmenu.AppendCheckItem( mpID_LOCKASPECT, _("Zablokuj proporcje"), _("Lock horizontal and vertical zoom aspect."));
-    m_popmenu.Append( mpID_HELP_MOUSE,   _("Pokaż komendy..."),    _("Show help about the mouse commands."));
+    m_popmenu.Append( mpID_CENTER,     _("Centre"),      _("Center plot view to this position"));
+    m_popmenu.Append( mpID_FIT,        _("Fit"),         _("Set plot view to show all items"));
+    m_popmenu.Append( mpID_ZOOM_IN,    _("Zoom in"),     _("Zoom in plot view."));
+    m_popmenu.Append( mpID_ZOOM_OUT,   _("Zoom out"),    _("Zoom out plot view."));
+    m_popmenu.AppendCheckItem( mpID_LOCKASPECT, _("Lock aspect ratio"), _("Lock horizontal and vertical zoom aspect."));
+    m_popmenu.Append( mpID_HELP_MOUSE,   _("Show mouse commands..."),    _("Show help about the mouse commands."));
 
     m_layers.clear();
     SetBackgroundColour( *wxWHITE );
@@ -1664,12 +1664,12 @@ void mpWindow::OnLockAspect(wxCommandEvent& WXUNUSED(event))
 
 void mpWindow::OnMouseHelp(wxCommandEvent& WXUNUSED(event))
 {
-    wxMessageBox(wxT("Dostępne komendu:\n \
-        - Lewy przycisk + Zaznaczenie: Prostokątny zoom\n \
-        - Prawy przycisk + Przesuwanie: Przesuwanie\n \
-        - Kółko: Przesuwanie w pionie\n \
-        - Kółko + SHIFT: Przesuwanie w poziomie\n \
-        - Kółko + CTRL: Przybliż/Oddal"),_("wxMathPlot help"),wxOK,this);
+    wxMessageBox(wxT("Available commands:\n \
+        - Left button + selection: Rectangle zoom\n \
+        - Right button + move: move\n \
+        - Wheel: moving vertically\n \
+        - Wheel + SHIFT: Moving horizontally\n \
+        - Wheel + CTRL: Zoom in/out"),_("wxMathPlot help"),wxOK,this);
 }
 
 void mpWindow::OnFit(wxCommandEvent& WXUNUSED(event))

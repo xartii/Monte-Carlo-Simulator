@@ -8,6 +8,8 @@ BEGIN_EVENT_TABLE(SimulationDialog, wxDialog)
 END_EVENT_TABLE()
 
 int Option::count = 0;
+
+//function which creates a new simulation and calculates it
 Simulation* Option::AddSimulation(int g, int o, int it, double s)
 {
     Simulation *tmp = new Simulation(g,o,it,s);
@@ -15,18 +17,18 @@ Simulation* Option::AddSimulation(int g, int o, int it, double s)
     return tmp;
 }
 
-
+//function which draws controls inside simulation dialog window
 void SimulationDialog::CreateControls()
 {
     color.Set(0,0,0);
-    new wxStaticText(this, wxID_STATIC, wxT("Podaj parametry niezbędne do przeprowadzenia symulacji:"),
+    new wxStaticText(this, wxID_STATIC, wxT("Enter parameters needed for calculating simulation:"),
                                            wxPoint(5,5), wxDefaultSize);
-    new wxStaticText(this, wxID_STATIC, wxT("Etykieta:"), wxPoint(5,43), wxDefaultSize, wxALIGN_LEFT);
+    new wxStaticText(this, wxID_STATIC, wxT("Label:"), wxPoint(5,43), wxDefaultSize, wxALIGN_LEFT);
     (new wxTextCtrl(this, -10, label, wxPoint(70, 40), wxSize(250, -1), wxTE_RIGHT))->SetFocus();
-    new wxStaticText(this, wxID_STATIC, wxT("Wybierz kolor wykresu:"), wxPoint(5, 73), wxDefaultSize);
+    new wxStaticText(this, wxID_STATIC, wxT("Graph color:"), wxPoint(5, 73), wxDefaultSize);
     new wxColourPickerCtrl(this, -666, color, wxPoint(160, 67), wxSize(100, 30));
 
-    new wxStaticText(this, wxID_STATIC, wxT("Częstość próbkowania: "), wxPoint(5,105), wxDefaultSize);
+    new wxStaticText(this, wxID_STATIC, wxT("Sampling frequency: "), wxPoint(5,105), wxDefaultSize);
 
     freq.Add(wxT("0.1"));
     freq.Add(wxT("0.01"));
@@ -45,13 +47,13 @@ void SimulationDialog::CreateControls()
     tmp << frequency;
     tmp.Replace(wxT(","), wxT("."));
     new wxComboBox(this, -6, tmp, wxPoint(160,100), wxSize(100, -1), freq, wxCB_READONLY);
-    new wxStaticText(this, wxID_STATIC, wxT("Rodzaj opcji: "), wxPoint(5,130), wxDefaultSize);
+    new wxStaticText(this, wxID_STATIC, wxT("Option type: "), wxPoint(5,130), wxDefaultSize);
 
-    type.Add(wxT("Kupno"));
-    type.Add(wxT("Sprzedaż"));
+    type.Add(wxT("Call"));
+    type.Add(wxT("Put"));
 
     new wxComboBox(this, -7, type.Item(optionType), wxPoint(160,125), wxSize(100,-1), type, wxCB_READONLY);
-    new wxStaticText(this, wxID_STATIC, wxT("Generator losowości: "), wxPoint(5,155), wxDefaultSize);
+    new wxStaticText(this, wxID_STATIC, wxT("Random numbers generator: "), wxPoint(5,155), wxDefaultSize);
 
 
     gen.Add(wxT("cstdlib"));
@@ -59,12 +61,12 @@ void SimulationDialog::CreateControls()
     gen.Add(wxT("Mersenne Twister"));
 
     new wxComboBox(this, -8, gen.Item(genType), wxPoint(160,150), wxSize(100,-1), gen, wxCB_READONLY);
-    new wxStaticText(this, wxID_STATIC, wxT("Ilość iteracji na punkt: "), wxPoint(5,185), wxDefaultSize);
+    new wxStaticText(this, wxID_STATIC, wxT("Calculations per point: "), wxPoint(5,185), wxDefaultSize);
     tmp = wxT("");
     tmp << iterations;
     new wxTextCtrl(this, -9, tmp, wxPoint(160,180), wxSize(100, -1), wxTE_RIGHT);
-    new wxButton(this, wxID_OK, wxT("Oblicz"), wxPoint(210,230), wxSize(80,30));
-    new wxButton(this, wxID_CANCEL, wxT("Anuluj"), wxPoint(300, 230), wxSize(80,30));
+    new wxButton(this, wxID_OK, wxT("Calculate"), wxPoint(210,230), wxSize(80,30));
+    new wxButton(this, wxID_CANCEL, wxT("Cancel"), wxPoint(300, 230), wxSize(80,30));
 
 }
 
@@ -73,12 +75,12 @@ void SimulationDialog::OnOk(wxCommandEvent &WXUNUSED(event))
 
     if(!static_cast<wxTextCtrl*>(FindWindow(-9))->GetValue().ToLong(&iterations))
     {
-        wxMessageBox(wxT("Podana ilość iteracji nie jest liczbą całkowitą!"), wxT("Błąd"), wxICON_ERROR, this);
+        wxMessageBox(wxT("Given calculations amount is not an integer"), wxT("Error"), wxICON_ERROR, this);
         return;
     }
     if(static_cast<wxTextCtrl*>(FindWindow(-10))->GetValue().IsEmpty())
     {
-        wxMessageBox(wxT("Nie podano etykiety!"), wxT("Błąd"), wxICON_ERROR, this);
+        wxMessageBox(wxT("No label has been given"), wxT("Error"), wxICON_ERROR, this);
         return;
     }
     label = static_cast<wxTextCtrl*>(FindWindow(-10))->GetValue();
@@ -111,7 +113,7 @@ void OptionDialog::CreateControls()
     wxString tmp;
     if(label == wxT(""))
     {
-        tmp = wxT("Opcja nr ");
+        tmp = wxT("Option number ");
         tmp << Option::GetCount()+1;
     }
     else
@@ -119,47 +121,47 @@ void OptionDialog::CreateControls()
         tmp = label;
     }
 
-    new wxStaticText(this, wxID_STATIC, wxT("Podaj parametry niezbędne do utworzenia opcji:"), wxPoint(5,5), wxDefaultSize);
+    new wxStaticText(this, wxID_STATIC, wxT("Enter option parameters:"), wxPoint(5,5), wxDefaultSize);
 
-    new wxStaticText(this, wxID_STATIC, wxT("Etykieta:"), wxPoint(5,43), wxDefaultSize, wxALIGN_LEFT);
+    new wxStaticText(this, wxID_STATIC, wxT("Label:"), wxPoint(5,43), wxDefaultSize, wxALIGN_LEFT);
     Ctrls.Add(new wxTextCtrl(this, -25, tmp, wxPoint(70, 40), wxSize(250, -1), wxTE_RIGHT));
 
     tmp = wxT("");
     if(Value != 0) tmp << Value;
-    //!wartość opcji
-    new wxStaticText(this, wxID_STATIC, wxT("Wartość opcji:"), wxPoint(5,103), wxDefaultSize, wxALIGN_LEFT);
+    //Option value
+    new wxStaticText(this, wxID_STATIC, wxT("Option value:"), wxPoint(5,103), wxDefaultSize, wxALIGN_LEFT);
     Ctrls.Add(new wxTextCtrl(this, -20, tmp, wxPoint(100,100), wxSize(100, -1), wxTE_RIGHT));
-    new wxStaticText(this, wxID_STATIC, wxT("zł"), wxPoint(200,103), wxDefaultSize, wxALIGN_LEFT);
+    new wxStaticText(this, wxID_STATIC, wxT("PLN"), wxPoint(200,103), wxDefaultSize, wxALIGN_LEFT);
 
     tmp = wxT("");
     if(Interest != 0) tmp << Interest;
-    //!wartość wykupu
-    new wxStaticText(this, wxID_STATIC, wxT("Wartość wykupu:"), wxPoint(250,103), wxDefaultSize, wxALIGN_LEFT);
+    //interest price
+    new wxStaticText(this, wxID_STATIC, wxT("Interest rate:"), wxPoint(250,103), wxDefaultSize, wxALIGN_LEFT);
     Ctrls.Add(new wxTextCtrl(this, -21, tmp, wxPoint(370,100), wxSize(100,-1), wxTE_RIGHT));
-    new wxStaticText(this, wxID_STATIC, wxT("zł"), wxPoint(470,103), wxDefaultSize, wxALIGN_LEFT);
+    new wxStaticText(this, wxID_STATIC, wxT("PLN"), wxPoint(470,103), wxDefaultSize, wxALIGN_LEFT);
 
     tmp = wxT("");
     if(RiskFree != 0) tmp << RiskFree;
-    //!stopa zwrotu
-    new wxStaticText(this, wxID_STATIC, wxT("Stopa zwrotu:"), wxPoint(5, 133), wxDefaultSize, wxALIGN_LEFT);
+    //risk free
+    new wxStaticText(this, wxID_STATIC, wxT("Riskfree rate:"), wxPoint(5, 133), wxDefaultSize, wxALIGN_LEFT);
     Ctrls.Add(new wxTextCtrl(this, -22, tmp, wxPoint(100, 130), wxSize(100, -1), wxTE_RIGHT));
 
     tmp = wxT("");
     if(Volatility != 0) tmp << Volatility;
-    //!zmienność
-    new wxStaticText(this, wxID_STATIC, wxT("Zmienność:"), wxPoint(250,133), wxDefaultSize, wxALIGN_LEFT);
+    //volatility
+    new wxStaticText(this, wxID_STATIC, wxT("Volatility:"), wxPoint(250,133), wxDefaultSize, wxALIGN_LEFT);
     Ctrls.Add(new wxTextCtrl(this, -23, tmp, wxPoint(370, 130), wxSize(100,-1), wxTE_RIGHT));
 
     tmp = wxT("");
     if(Time != 0) tmp << Time;
-    //!czas
-    new wxStaticText(this, wxID_STATIC, wxT("Czas trwania:"), wxPoint(5,163), wxDefaultSize, wxALIGN_LEFT);
+    //time
+    new wxStaticText(this, wxID_STATIC, wxT("Time:"), wxPoint(5,163), wxDefaultSize, wxALIGN_LEFT);
     Ctrls.Add(new wxTextCtrl(this, -24, tmp, wxPoint(100, 160), wxSize(100,-1), wxTE_RIGHT));
-    new wxStaticText(this, wxID_STATIC, wxT("dni"), wxPoint(200,163), wxDefaultSize, wxALIGN_LEFT);
+    new wxStaticText(this, wxID_STATIC, wxT("days"), wxPoint(200,163), wxDefaultSize, wxALIGN_LEFT);
 
-    (Time != 0)? tmp = wxT("Zmień"): tmp = wxT("Dodaj");
+    (Time != 0)? tmp = wxT("Change"): tmp = wxT("Add");
      new wxButton(this, wxID_OK, tmp, wxPoint(300,200), wxSize(80,30));
-     new wxButton(this, wxID_CANCEL, wxT("Anuluj"), wxPoint(400, 200), wxSize(80,30));
+     new wxButton(this, wxID_CANCEL, wxT("Cancel"), wxPoint(400, 200), wxSize(80,30));
 
      Centre();
      Ctrls.Item(1)->SetFocus();
@@ -167,36 +169,36 @@ void OptionDialog::CreateControls()
 }
 
 
-
+//function for validating user input on OK button press
 void OptionDialog::OnOk(wxCommandEvent &WXUNUSED(event))
 {
     if(!Ctrls.Item(1)->GetValue().ToDouble(&Value))
     {
-        wxMessageBox(wxT("Podana wartość opcji nie jest liczbą!"), wxT("Błąd"), wxICON_ERROR, this);
+        wxMessageBox(wxT("Given option value is not a number!"), wxT("Error"), wxICON_ERROR, this);
         return;
     }
 
     if(!Ctrls.Item(2)->GetValue().ToDouble(&Interest))
     {
-        wxMessageBox(wxT("Podana wartość wykupu nie jest liczbą!"), wxT("Błąd"), wxICON_ERROR, this);
+        wxMessageBox(wxT("Given interest rate is not a number!"), wxT("Error"), wxICON_ERROR, this);
         return;
     }
 
     if(!Ctrls.Item(3)->GetValue().ToDouble(&RiskFree))
     {
-        wxMessageBox(wxT("Podana stopa zwrotu nie jest liczbą!"), wxT("Błąd"), wxICON_ERROR, this);
+        wxMessageBox(wxT("Given riskfree rate is not a number!"), wxT("Error"), wxICON_ERROR, this);
         return;
     }
 
     if(!Ctrls.Item(4)->GetValue().ToDouble(&Volatility))
     {
-        wxMessageBox(wxT("Podana zmienność nie jest liczbą!"), wxT("Błąd"), wxICON_ERROR, this);
+        wxMessageBox(wxT("Given volatility is not a number!"), wxT("Error"), wxICON_ERROR, this);
         return;
     }
 
     if(!Ctrls.Item(5)->GetValue().ToLong(&Time))
     {
-        wxMessageBox(wxT("Podana ilość dni nie jest liczbą!"), wxT("Błąd"), wxICON_ERROR, this);
+        wxMessageBox(wxT("Given time is not a number!"), wxT("Error"), wxICON_ERROR, this);
         return;
     }
 

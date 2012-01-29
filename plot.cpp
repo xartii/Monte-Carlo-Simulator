@@ -3,10 +3,6 @@
 CPlot::~CPlot()
 {
     plotWnd->DelAllLayers(true, true);
-    /*delete xaxis;
-    delete yaxis;
-    delete nfo;
-    delete plotWnd;*/
 }
 
 CPlot::CPlot(MainWnd* hWnd)
@@ -26,7 +22,6 @@ CPlot::CPlot(MainWnd* hWnd)
     xaxis->SetDrawOutsideMargins(false);
     yaxis->SetDrawOutsideMargins(false);
     plotWnd->LockAspect(false);
-    //plotWnd->DelAllLayers(false, true);
     plotWnd->SetMargins(40, 40, 50, 50);
     plotWnd->AddLayer(xaxis);
     plotWnd->AddLayer(yaxis);
@@ -40,12 +35,6 @@ CPlot::CPlot(MainWnd* hWnd)
 
 mpFXYVector* CPlot::Draw(MainWnd* hWnd,mCarloResults *results, wxColor color)
 {
-
-    //xaxis->SetTicks(true);
-
-   // plotWnd->SetPos(0,0);
-    //plotWnd->SetScaleX(results->xmax);
-    //plotWnd->SetScaleY(results->ymax);
     vector = new mpFXYVector();
     vector->SetData(results->x, results->y);
     vector->SetContinuity(true);
