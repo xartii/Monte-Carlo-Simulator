@@ -29,7 +29,6 @@ private:
 
 public:
     MainWnd(const wxString &title, const wxPoint &position, const wxSize &size);
-//    ~MainWnd();
     void OnQuit(wxCommandEvent &event);
     void Fill(MainWnd* hWnd);
     void OnClick(wxCommandEvent &WXUNUSED(event));

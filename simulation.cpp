@@ -7,7 +7,6 @@ void Simulation::calculate(const double Time_,
                            const double RiskFree_,
                            const double Interest_)
 {
- 	//int counter = 0;
 	double Sum = 0;
 	double temp;
 	double time;
